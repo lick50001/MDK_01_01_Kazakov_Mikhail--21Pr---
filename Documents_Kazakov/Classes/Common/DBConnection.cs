@@ -1,29 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Data;
+using System.Data.OleDb;
 
 namespace Documents_Kazakov.Classes.Common
 {
-    public class DBConnection
+    public static class DBConnection
     {
-        public static readonly string Path = "";
-        public static MishConnection Connection()
+        public static readonly string Path = @"C:\путь\к\вашей\Database.accdb"; // <-- Укажите реальный путь!
+
+        public static OleDbConnection Connection()
         {
-            MishConnection mishConnection = new MishConnection("Provider=Microsoft.ACE.MISHDB.12.0; Data Source=" + Path);
-            mishConnection.Open();
-            return mishConnection;
+            var conn = new OleDbConnection($"Provider=Microsoft.ACE.OLEDB.12.0;Data Source={Path};");
+            conn.Open();
+            return conn;
         }
 
-        public static MishDbDataReader Query(string Query, MishConnection Connection)
+        public static OleDbDataReader Query(string query, OleDbConnection connection)
         {
-            return new MishDbCommand(Query, Connection).ExecuteReader();
+            var command = new OleDbCommand(query, connection);
+            return command.ExecuteReader();
         }
 
-        public static void CloseConnection(MishConnection Connection)
+        public static void CloseConnection(OleDbConnection connection)
         {
-            Connection.Close();
+            connection?.Close();
         }
     }
 }
